@@ -1,0 +1,1290 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TikTok Video Downloader | MR-MOMIN</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 15px;
+        }
+
+        .container {
+            max-width: 100%;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-size: 1.8rem;
+            margin-bottom: 8px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: 1rem;
+            opacity: 0.9;
+            margin-bottom: 8px;
+        }
+
+        .developer-credit {
+            background: rgba(255,255,255,0.2);
+            padding: 8px 15px;
+            border-radius: 20px;
+            display: inline-block;
+            margin-top: 8px;
+            font-size: 0.9rem;
+        }
+
+        .developer-credit span {
+            font-weight: bold;
+            color: #ffd700;
+        }
+
+        .input-section {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            margin-bottom: 20px;
+            border: 2px solid #3498db;
+        }
+
+        .url-input-container {
+            position: relative;
+            margin-bottom: 12px;
+        }
+
+        .url-input {
+            width: 100%;
+            padding: 12px 35px 12px 15px;
+            font-size: 16px;
+            border: 2px solid #3498db;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .url-input:focus {
+            outline: none;
+            border-color: #2980b9;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+        }
+
+        .clean-btn {
+            position: absolute;
+            right: 8px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: #e74c3c;
+            color: white;
+            border: none;
+            padding: 4px 8px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 10px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .clean-btn:hover {
+            background: #c0392b;
+            transform: translateY(-50%) scale(1.1);
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            font-size: 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            margin: 5px;
+            width: 100%;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .btn-download {
+            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+        }
+
+        .btn-copy {
+            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+            padding: 6px 12px;
+            font-size: 12px;
+            margin-left: 8px;
+        }
+
+        .result-section {
+            display: none;
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            margin-bottom: 20px;
+            border: 2px solid #3498db;
+        }
+
+        /* FIXED: Mobile-first side by side layout */
+        .media-container {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 15px;
+            margin: 15px 0;
+            width: 100%;
+        }
+
+        .cover-box, .video-box {
+            flex: 1;
+            text-align: center;
+            min-width: 45%;
+            max-width: 48%;
+        }
+
+        .media-label {
+            font-size: 14px;
+            font-weight: bold;
+            margin-bottom: 8px;
+            color: #2d3748;
+            display: block;
+        }
+
+        .media-content {
+            width: 100%;
+            border-radius: 8px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+            background: #f8f9fa;
+            overflow: hidden;
+            aspect-ratio: 9/16;
+            border: 2px solid #3498db;
+        }
+
+        .media-content img,
+        .media-content video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .video-info {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .detail-item {
+            background: white;
+            padding: 12px;
+            border-radius: 8px;
+            border-left: 4px solid #3498db;
+            border: 2px solid #3498db;
+            margin-bottom: 10px;
+        }
+
+        .detail-item h3 {
+            color: #3498db;
+            margin-bottom: 5px;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .detail-item p {
+            color: #2d3748;
+            font-size: 14px;
+            line-height: 1.4;
+        }
+
+        /* UPDATED: Caption container styling */
+        .caption-container {
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+        }
+
+        .caption-text {
+            flex: 1;
+            word-break: break-word;
+            background: white;
+            padding: 12px;
+            border-radius: 8px;
+            border: 2px solid #3498db;
+            font-size: 14px;
+            line-height: 1.5;
+            white-space: pre-line;
+            overflow-wrap: break-word;
+            max-height: 150px;
+            overflow-y: auto;
+            color: #2c3e50;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .download-section {
+            text-align: center;
+            padding-top: 15px;
+            border-top: 2px solid #3498db;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .stat-item {
+            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            transition: transform 0.3s ease;
+            border: 2px solid rgba(255,255,255,0.3);
+        }
+
+        .stat-item:hover {
+            transform: translateY(-3px);
+        }
+
+        .stat-number {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            opacity: 0.9;
+            margin-bottom: 3px;
+        }
+
+        .exact-number {
+            font-size: 10px;
+            opacity: 0.8;
+            color: rgba(255,255,255,0.9);
+            font-family: 'Courier New', monospace;
+            background: rgba(0,0,0,0.2);
+            padding: 2px 4px;
+            border-radius: 3px;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 30px;
+            display: none;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            margin-bottom: 20px;
+            border: 2px solid #3498db;
+        }
+
+        .error {
+            background: #fed7d7;
+            color: #c53030;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            display: none;
+            margin-bottom: 15px;
+            border-left: 4px solid #e53e3e;
+            font-size: 14px;
+            border: 2px solid #e53e3e;
+        }
+
+        .success {
+            background: #c6f6d5;
+            color: #276749;
+            padding: 8px 12px;
+            border-radius: 5px;
+            text-align: center;
+            display: none;
+            margin-bottom: 10px;
+            font-size: 13px;
+            border-left: 4px solid #38a169;
+            border: 2px solid #38a169;
+        }
+
+        .footer {
+            text-align: center;
+            color: white;
+            margin-top: 30px;
+            padding: 15px;
+            opacity: 0.8;
+            font-size: 0.9rem;
+        }
+
+        .footer p {
+            margin: 5px 0;
+        }
+
+        .download-loading {
+            display: none;
+            text-align: center;
+            margin: 15px 0;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            border: 2px solid #3498db;
+        }
+
+        .pulse-loader {
+            display: inline-block;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: #3498db;
+            animation: pulse 1.2s infinite ease-in-out;
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(0.8);
+                box-shadow: 0 0 0 0 rgba(52, 152, 219, 0.7);
+            }
+            50% {
+                transform: scale(1);
+                box-shadow: 0 0 0 10px rgba(52, 152, 219, 0);
+            }
+            100% {
+                transform: scale(0.8);
+                box-shadow: 0 0 0 0 rgba(52, 152, 219, 0);
+            }
+        }
+
+        .info-card {
+            background: white;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            border-left: 4px solid #3498db;
+            border: 2px solid #3498db;
+        }
+
+        .info-card h3 {
+            color: #3498db;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 16px;
+        }
+
+        .creator-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            background: white;
+            border-radius: 8px;
+            margin-bottom: 12px;
+            border: 2px solid #3498db;
+        }
+
+        .creator-avatar {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #3498db;
+        }
+
+        .creator-details {
+            flex: 1;
+        }
+
+        .creator-name {
+            font-weight: bold;
+            color: #2d3748;
+            margin-bottom: 3px;
+            font-size: 15px;
+        }
+
+        .creator-id {
+            color: #718096;
+            font-size: 13px;
+        }
+
+        /* Enhanced loading animations */
+        .loading-dots {
+            display: flex;
+            justify-content: center;
+            margin-top: 12px;
+        }
+
+        .loading-dot {
+            width: 10px;
+            height: 10px;
+            margin: 0 4px;
+            background-color: #3498db;
+            border-radius: 50%;
+            animation: loading-dot 1.5s infinite ease-in-out;
+        }
+
+        .loading-dot:nth-child(1) {
+            animation-delay: 0s;
+        }
+
+        .loading-dot:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .loading-dot:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        @keyframes loading-dot {
+            0%, 100% {
+                transform: scale(0.8);
+                opacity: 0.5;
+            }
+            50% {
+                transform: scale(1.2);
+                opacity: 1;
+            }
+        }
+
+        .wave-loader {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 15px 0;
+        }
+
+        .wave-loader div {
+            width: 6px;
+            height: 30px;
+            margin: 0 2px;
+            background: linear-gradient(to top, #3498db, #2980b9);
+            border-radius: 3px;
+            animation: wave 1.2s infinite ease-in-out;
+        }
+
+        .wave-loader div:nth-child(1) {
+            animation-delay: 0s;
+        }
+
+        .wave-loader div:nth-child(2) {
+            animation-delay: 0.1s;
+        }
+
+        .wave-loader div:nth-child(3) {
+            animation-delay: 0.2s;
+        }
+
+        .wave-loader div:nth-child(4) {
+            animation-delay: 0.3s;
+        }
+
+        .wave-loader div:nth-child(5) {
+            animation-delay: 0.4s;
+        }
+
+        @keyframes wave {
+            0%, 40%, 100% {
+                transform: scaleY(0.5);
+            }
+            20% {
+                transform: scaleY(1);
+            }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(15px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .bounce-in {
+            animation: bounceIn 0.6s ease-in-out;
+        }
+
+        @keyframes bounceIn {
+            0% {
+                opacity: 0;
+                transform: scale(0.3);
+            }
+            50% {
+                opacity: 1;
+                transform: scale(1.05);
+            }
+            70% {
+                transform: scale(0.9);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        /* 5-second special animation */
+        .special-loader {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin: 20px 0;
+        }
+
+        .tiktok-loader {
+            width: 60px;
+            height: 60px;
+            position: relative;
+            margin-bottom: 15px;
+        }
+
+        .tiktok-loader .music-note {
+            position: absolute;
+            font-size: 30px;
+            color: #3498db;
+            animation: musicFloat 2s infinite ease-in-out;
+        }
+
+        .tiktok-loader .music-note:nth-child(1) {
+            left: 0;
+            top: 0;
+            animation-delay: 0s;
+        }
+
+        .tiktok-loader .music-note:nth-child(2) {
+            right: 0;
+            top: 15px;
+            animation-delay: 0.5s;
+        }
+
+        .tiktok-loader .music-note:nth-child(3) {
+            left: 15px;
+            bottom: 0;
+            animation-delay: 1s;
+        }
+
+        @keyframes musicFloat {
+            0%, 100% {
+                transform: translateY(0) scale(1);
+                opacity: 0.7;
+            }
+            50% {
+                transform: translateY(-10px) scale(1.2);
+                opacity: 1;
+            }
+        }
+
+        .countdown {
+            font-size: 16px;
+            font-weight: bold;
+            color: #3498db;
+            margin-top: 12px;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 6px 12px;
+            border-radius: 15px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .rotating-text {
+            font-size: 16px;
+            font-weight: bold;
+            color: #333;
+            margin-top: 12px;
+            height: 25px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .rotating-text span {
+            display: block;
+            position: absolute;
+            width: 100%;
+            opacity: 0;
+            animation: rotateText 10s infinite linear;
+        }
+
+        .rotating-text span:nth-child(1) {
+            animation-delay: 0s;
+        }
+        .rotating-text span:nth-child(2) {
+            animation-delay: 2s;
+        }
+        .rotating-text span:nth-child(3) {
+            animation-delay: 4s;
+        }
+        .rotating-text span:nth-child(4) {
+            animation-delay: 6s;
+        }
+        .rotating-text span:nth-child(5) {
+            animation-delay: 8s;
+        }
+
+        @keyframes rotateText {
+            0% {
+                opacity: 0;
+                transform: translateY(15px);
+            }
+            5% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+            20% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+            25% {
+                opacity: 0;
+                transform: translateY(-15px);
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(-15px);
+            }
+        }
+
+        /* Ensure side by side layout on all phones */
+        @media (max-width: 480px) {
+            .media-container {
+                flex-direction: row;
+                gap: 10px;
+            }
+            
+            .cover-box, .video-box {
+                min-width: 48%;
+                max-width: 48%;
+            }
+            
+            .media-content {
+                aspect-ratio: 9/16;
+            }
+            
+            .stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎵 TikTok Video Downloader</h1>
+            <p>টিকটক ভিডিওর সকল তথ্য এবং ডাউনলোড অপশন</p>
+            <div class="developer-credit">
+                Developed by: <span>MR-MOMIN</span>
+            </div>
+        </div>
+
+        <div class="input-section">
+            <div class="url-input-container">
+                <input type="url" class="url-input" id="videoUrl" 
+                       placeholder="টিকটক ভিডিওর URL এখানে পেস্ট করুন...">
+                <button class="clean-btn" onclick="cleanUrl()" title="URL ক্লিন করুন">
+                    ✕
+                </button>
+            </div>
+            
+            <button class="btn" onclick="getVideoInfo()">
+                🔍 ভিডিও তথ্য সংগ্রহ করুন
+            </button>
+        </div>
+
+        <div class="loading" id="loading">
+            <div class="special-loader">
+                <div class="tiktok-loader">
+                    <div class="music-note">♪</div>
+                    <div class="music-note">♫</div>
+                    <div class="music-note">🎵</div>
+                </div>
+                <div class="rotating-text">
+                    <span>ভিডিও তথ্য সংগ্রহ করা হচ্ছে...</span>
+                    <span>ভিডিও বিশ্লেষণ করা হচ্ছে...</span>
+                    <span>মেটাডাটা প্রক্রিয়া করা হচ্ছে...</span>
+                    <span>ডাউনলোড লিংক তৈরি করা হচ্ছে...</span>
+                    <span>প্রায় শেষ...</span>
+                </div>
+                <div class="countdown" id="countdown">৫</div>
+            </div>
+            <div class="wave-loader">
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+            </div>
+        </div>
+
+        <div class="download-loading" id="downloadLoading">
+            <div class="pulse-loader"></div>
+            <p style="margin-top: 12px;">ডাউনলোড প্রস্তুত করা হচ্ছে...</p>
+            <div class="loading-dots">
+                <div class="loading-dot"></div>
+                <div class="loading-dot"></div>
+                <div class="loading-dot"></div>
+            </div>
+        </div>
+
+        <div class="error" id="error"></div>
+        <div class="success" id="success"></div>
+
+        <div class="result-section fade-in" id="resultSection">
+            <div class="info-card bounce-in">
+                <h3>🎬 ভিডিও প্রিভিউ</h3>
+                
+                <!-- FIXED: Mobile side by side layout -->
+                <div class="media-container">
+                    <div class="cover-box">
+                        <span class="media-label">🖼️ কভার</span>
+                        <div class="media-content">
+                            <img id="videoCover" src="" alt="Video Cover">
+                        </div>
+                    </div>
+                    <div class="video-box">
+                        <span class="media-label">🎥 ভিডিও</span>
+                        <div class="media-content">
+                            <video id="videoPlayer" controls></video>
+                        </div>
+                    </div>
+                </div>
+                
+                <div style="text-align: center; margin-top: 12px;">
+                    <audio id="videoMusic" controls style="width: 100%; max-width: 300px;"></audio>
+                </div>
+            </div>
+
+            <div class="video-info">
+                <div class="info-card fade-in">
+                    <h3>📝 ভিডিও ডিটেইলস</h3>
+                    <div class="detail-item">
+                        <h3>ভিডিও ক্যাপশন</h3>
+                        <div class="caption-container">
+                            <p id="videoTitle" class="caption-text">লোড হচ্ছে...</p>
+                            <button class="btn btn-copy" onclick="copyCaption()">
+                                📋 কপি
+                            </button>
+                        </div>
+                    </div>
+                    <div class="detail-item">
+                        <h3>আপলোড সময়</h3>
+                        <p id="uploadTime">লোড হচ্ছে...</p>
+                    </div>
+                    <div class="detail-item">
+                        <h3>ভিডিও আইডি</h3>
+                        <p id="videoId">লোড হচ্ছে...</p>
+                    </div>
+                </div>
+
+                <div class="info-card fade-in">
+                    <h3>👤 ক্রিয়েটর তথ্য</h3>
+                    <div class="creator-info">
+                        <img id="creatorAvatar" src="" alt="Creator Avatar" class="creator-avatar">
+                        <div class="creator-details">
+                            <div class="creator-name" id="creatorName">লোড হচ্ছে...</div>
+                            <div class="creator-id" id="creatorId">@username</div>
+                        </div>
+                    </div>
+                    <div class="detail-item">
+                        <h3>ক্রিয়েটর আইডি</h3>
+                        <p id="creatorUniqueId">লোড হচ্ছে...</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="info-card fade-in">
+                <h3>📊 ভিডিও স্ট্যাটিস্টিক্স</h3>
+                <div class="stats">
+                    <div class="stat-item bounce-in">
+                        <div class="stat-number" id="likesCount">0</div>
+                        <div class="stat-label">লাইক</div>
+                        <div class="exact-number" id="exactLikes">0</div>
+                    </div>
+                    <div class="stat-item bounce-in">
+                        <div class="stat-number" id="commentsCount">0</div>
+                        <div class="stat-label">কমেন্ট</div>
+                        <div class="exact-number" id="exactComments">0</div>
+                    </div>
+                    <div class="stat-item bounce-in">
+                        <div class="stat-number" id="sharesCount">0</div>
+                        <div class="stat-label">শেয়ার</div>
+                        <div class="exact-number" id="exactShares">0</div>
+                    </div>
+                    <div class="stat-item bounce-in">
+                        <div class="stat-number" id="playCount">0</div>
+                        <div class="stat-label">ভিউ</div>
+                        <div class="exact-number" id="exactViews">0</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="info-card fade-in">
+                <h3>📥 ডাউনলোড অপশন</h3>
+                <button class="btn btn-download" onclick="downloadVideo('noWatermark')">
+                    📥 ওয়াটারমার্ক ছাড়া
+                </button>
+                <button class="btn btn-download" onclick="downloadVideo('withWatermark')">
+                    📥 ওয়াটারমার্ক সহ
+                </button>
+                <button class="btn btn-download" onclick="downloadMusic()">
+                    🎵 মিউজিক ডাউনলোড
+                </button>
+                <button class="btn btn-download" onclick="downloadCover()">
+                    🖼️ কভার ডাউনলোড
+                </button>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>© 2024 TikTok Video Downloader | All Rights Reserved</p>
+            <p>Developed with ❤️ by <strong>MR-MOMIN</strong></p>
+            <p>এই টুলটি শিক্ষামূলক উদ্দেশ্যে তৈরি করা হয়েছে</p>
+        </div>
+    </div>
+
+    <script>
+        let currentVideoData = null;
+        let countdownInterval;
+        
+        const APIS = {
+            tikwm: {
+                name: 'TikWM API',
+                endpoints: [
+                    'https://www.tikwm.com/api/',
+                    'https://tikwm.com/api/'
+                ],
+                method: 'GET'
+            }
+        };
+
+        function showLoading(show) {
+            const loading = document.getElementById('loading');
+            loading.style.display = show ? 'block' : 'none';
+            
+            if (show) {
+                startCountdown();
+            } else {
+                stopCountdown();
+            }
+        }
+
+        function startCountdown() {
+            let countdown = 5;
+            const countdownElement = document.getElementById('countdown');
+            countdownElement.textContent = countdown;
+            
+            countdownInterval = setInterval(() => {
+                countdown--;
+                countdownElement.textContent = countdown;
+                
+                if (countdown <= 0) {
+                    clearInterval(countdownInterval);
+                }
+            }, 1000);
+        }
+
+        function stopCountdown() {
+            if (countdownInterval) {
+                clearInterval(countdownInterval);
+            }
+        }
+
+        function showDownloadLoading(show) {
+            document.getElementById('downloadLoading').style.display = show ? 'block' : 'none';
+        }
+
+        function showError(message) {
+            const errorDiv = document.getElementById('error');
+            errorDiv.textContent = message;
+            errorDiv.style.display = 'block';
+            setTimeout(() => {
+                errorDiv.style.display = 'none';
+            }, 5000);
+        }
+
+        function showSuccess(message) {
+            const successDiv = document.getElementById('success');
+            successDiv.textContent = message;
+            successDiv.style.display = 'block';
+            setTimeout(() => {
+                successDiv.style.display = 'none';
+            }, 3000);
+        }
+
+        function cleanUrl() {
+            const urlInput = document.getElementById('videoUrl');
+            let url = urlInput.value.trim();
+            
+            if (!url) {
+                showError('দয়া করে একটি URL ইনপুট করুন');
+                return;
+            }
+
+            try {
+                if (url.includes('vt.tiktok.com')) {
+                    urlInput.value = url;
+                    showSuccess('URL সফলভাবে ক্লিন করা হয়েছে!');
+                    return;
+                }
+
+                if (url.includes('tiktok.com')) {
+                    const urlObj = new URL(url);
+                    const cleanParams = new URLSearchParams();
+                    
+                    if (urlObj.searchParams.has('is_from_webapp')) {
+                        cleanParams.set('is_from_webapp', urlObj.searchParams.get('is_from_webapp'));
+                    }
+                    if (urlObj.searchParams.has('sender_device')) {
+                        cleanParams.set('sender_device', urlObj.searchParams.get('sender_device'));
+                    }
+                    
+                    urlObj.search = cleanParams.toString();
+                    url = urlObj.toString();
+                    
+                    url = url.replace(/\/$/, '');
+                }
+                
+                urlInput.value = url;
+                showSuccess('URL সফলভাবে ক্লিন করা হয়েছে!');
+            } catch (e) {
+                console.error('URL cleaning error:', e);
+                showError('ইনভ্যালিড URL। দয়া করে চেক করুন।');
+            }
+        }
+
+        function formatNumber(num) {
+            if (!num) return '0';
+            
+            num = parseInt(num);
+            
+            if (num >= 1000000) {
+                return (num / 1000000).toFixed(1) + 'M';
+            } else if (num >= 1000) {
+                return (num / 1000).toFixed(1) + 'K';
+            }
+            return num.toString();
+        }
+
+        function formatExactNumber(num) {
+            if (!num) return '0';
+            return new Intl.NumberFormat('en-US').format(num);
+        }
+
+        function animateCounter(element, target, exactElement = null) {
+            const duration = 1500;
+            const step = target / (duration / 16);
+            let current = 0;
+            
+            const timer = setInterval(() => {
+                current += step;
+                if (current >= target) {
+                    current = target;
+                    clearInterval(timer);
+                }
+                element.textContent = formatNumber(Math.floor(current));
+                if (exactElement) {
+                    exactElement.textContent = formatExactNumber(Math.floor(current));
+                }
+            }, 16);
+        }
+
+        function formatTimestamp(timestamp) {
+            if (!timestamp) return 'অজানা';
+            const date = new Date(timestamp * 1000);
+            return date.toLocaleString('bn-BD', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+        }
+
+        // FIXED: Proper caption text formatting
+        function formatCaption(caption) {
+            if (!caption) return 'ক্যাপশন নেই';
+            
+            // Remove extra line breaks and spaces
+            let formattedCaption = caption
+                .replace(/\n+/g, '\n') // Replace multiple newlines with single
+                .replace(/\n/g, ' ')   // Replace single newlines with spaces
+                .replace(/\s+/g, ' ')  // Replace multiple spaces with single
+                .trim();
+            
+            return formattedCaption;
+        }
+
+        function copyCaption() {
+            const captionText = document.getElementById('videoTitle').textContent;
+            navigator.clipboard.writeText(captionText).then(() => {
+                showSuccess('ক্যাপশন কপি করা হয়েছে!');
+            }).catch(err => {
+                showError('ক্যাপশন কপি করতে সমস্যা হয়েছে');
+            });
+        }
+
+        async function tryApi(apiName, videoUrl) {
+            const apiConfig = APIS[apiName];
+            
+            for (const endpoint of apiConfig.endpoints) {
+                try {
+                    let response;
+                    
+                    if (apiConfig.method === 'GET') {
+                        const url = endpoint + (endpoint.includes('?') ? '&' : '?') + 'url=' + encodeURIComponent(videoUrl);
+                        response = await fetch(url);
+                    } else {
+                        const formData = new FormData();
+                        formData.append('url', videoUrl);
+                        
+                        response = await fetch(endpoint, {
+                            method: 'POST',
+                            body: formData
+                        });
+                    }
+                    
+                    if (response.ok) {
+                        const data = await response.json();
+                        if (data.code === 0 || data.success) {
+                            currentVideoData = processApiData(apiName, data);
+                            return true;
+                        }
+                    }
+                } catch (error) {
+                    console.log(`${apiConfig.name} failed:`, error);
+                    continue;
+                }
+            }
+            return false;
+        }
+
+        function processApiData(apiName, data) {
+            switch(apiName) {
+                case 'tikwm':
+                    return data.data;
+                default:
+                    return data.data || data;
+            }
+        }
+
+        async function getVideoInfo() {
+            const videoUrl = document.getElementById('videoUrl').value.trim();
+            
+            if (!videoUrl) {
+                showError('দয়া করে একটি টিকটক ভিডিও URL ইনপুট করুন');
+                return;
+            }
+
+            showLoading(true);
+
+            // 5-second loading simulation
+            await new Promise(resolve => setTimeout(resolve, 5000));
+
+            let success = false;
+            for (const apiName of Object.keys(APIS)) {
+                success = await tryApi(apiName, videoUrl);
+                if (success) {
+                    break;
+                }
+                
+                await new Promise(resolve => setTimeout(resolve, 1000));
+            }
+
+            showLoading(false);
+            
+            if (success) {
+                displayVideoInfo(currentVideoData);
+            } else {
+                showError('ভিডিও তথ্য সংগ্রহ করতে সমস্যা হয়েছে। দয়া করে URL চেক করুন এবং আবার চেষ্টা করুন।');
+            }
+        }
+
+        function displayVideoInfo(data) {
+            if (!data) {
+                showError('ভিডিও ডেটা পাওয়া যায়নি');
+                return;
+            }
+
+            // FIXED: Use formatted caption
+            document.getElementById('videoTitle').textContent = formatCaption(data.title);
+            document.getElementById('uploadTime').textContent = formatTimestamp(data.create_time);
+            document.getElementById('videoId').textContent = data.id || 'N/A';
+
+            document.getElementById('creatorName').textContent = data.author?.nickname || 'অজানা';
+            document.getElementById('creatorId').textContent = '@' + (data.author?.unique_id || 'username');
+            document.getElementById('creatorUniqueId').textContent = data.author?.unique_id || 'N/A';
+
+            if (data.author?.avatar) {
+                const avatarImg = document.getElementById('creatorAvatar');
+                avatarImg.src = data.author.avatar;
+            }
+
+            const coverImg = document.getElementById('videoCover');
+            const videoPlayer = document.getElementById('videoPlayer');
+            const musicElement = document.getElementById('videoMusic');
+
+            if (data.cover) {
+                coverImg.src = data.cover;
+            }
+
+            if (data.play) {
+                videoPlayer.src = data.play;
+            }
+
+            if (data.music) {
+                musicElement.src = data.music;
+            }
+
+            setTimeout(() => {
+                const likes = data.digg_count || data.likes || 0;
+                const comments = data.comment_count || data.comments || 0;
+                const shares = data.share_count || data.shares || 0;
+                const views = data.play_count || data.views || 0;
+
+                animateCounter(document.getElementById('likesCount'), likes, document.getElementById('exactLikes'));
+                animateCounter(document.getElementById('commentsCount'), comments, document.getElementById('exactComments'));
+                animateCounter(document.getElementById('sharesCount'), shares, document.getElementById('exactShares'));
+                animateCounter(document.getElementById('playCount'), views, document.getElementById('exactViews'));
+            }, 500);
+
+            document.getElementById('resultSection').style.display = 'block';
+        }
+
+        async function downloadVideo(type) {
+            if (!currentVideoData) {
+                showError('কোন ভিডিও ডেটা পাওয়া যায়নি');
+                return;
+            }
+
+            showDownloadLoading(true);
+
+            let downloadUrl = '';
+            if (type === 'noWatermark' && currentVideoData.play) {
+                downloadUrl = currentVideoData.play;
+            } else if (type === 'withWatermark' && currentVideoData.wmplay) {
+                downloadUrl = currentVideoData.wmplay;
+            } else if (type === 'noWatermark') {
+                downloadUrl = currentVideoData.play;
+            }
+
+            await new Promise(resolve => setTimeout(resolve, 1000));
+
+            if (downloadUrl) {
+                const link = document.createElement('a');
+                link.href = downloadUrl;
+                link.download = `tiktok_video_${currentVideoData.id}.mp4`;
+                link.target = '_blank';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                showSuccess('ডাউনলোড শুরু হয়েছে!');
+            } else {
+                showError('ডাউনলোড লিংক পাওয়া যায়নি');
+            }
+
+            showDownloadLoading(false);
+        }
+
+        async function downloadMusic() {
+            if (!currentVideoData || !currentVideoData.music) {
+                showError('মিউজিক ডাউনলোড লিংক পাওয়া যায়নি');
+                return;
+            }
+
+            showDownloadLoading(true);
+            
+            await new Promise(resolve => setTimeout(resolve, 1000));
+
+            const link = document.createElement('a');
+            link.href = currentVideoData.music;
+            link.download = `tiktok_music_${currentVideoData.id}.mp3`;
+            link.target = '_blank';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            showSuccess('মিউজিক ডাউনলোড শুরু হয়েছে!');
+
+            showDownloadLoading(false);
+        }
+
+        async function downloadCover() {
+            if (!currentVideoData || !currentVideoData.cover) {
+                showError('কভার ইমেজ পাওয়া যায়নি');
+                return;
+            }
+
+            showDownloadLoading(true);
+            
+            await new Promise(resolve => setTimeout(resolve, 1000));
+
+            const link = document.createElement('a');
+            link.href = currentVideoData.cover;
+            link.download = `tiktok_cover_${currentVideoData.id}.jpg`;
+            link.target = '_blank';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            showSuccess('কভার ইমেজ ডাউনলোড শুরু হয়েছে!');
+
+            showDownloadLoading(false);
+        }
+
+        // Enter key support
+        document.getElementById('videoUrl').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                getVideoInfo();
+            }
+        });
+
+        // Auto clean URL on paste
+        document.getElementById('videoUrl').addEventListener('paste', function(e) {
+            setTimeout(() => {
+                cleanUrl();
+            }, 100);
+        });
+
+        // Make sure clean button works properly
+        document.querySelector('.clean-btn').addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            cleanUrl();
+        });
+
+        // Also allow cleaning by pressing the button multiple times if needed
+        document.querySelector('.clean-btn').addEventListener('mousedown', function(e) {
+            e.preventDefault();
+        });
+    </script>
+</body>
+</html>
